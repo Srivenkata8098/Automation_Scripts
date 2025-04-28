@@ -1,0 +1,20 @@
+export TO='srivenkata.atti@s.com'
+cd /local/apps/Sri_venkata/Sri_scripts
+smail()
+{
+export SUBJ="Stopped instances List"
+(
+cat << !
+To : ${TO}
+From : oci@mheducation.com
+Subject : ${SUBJ}
+MIME-Version : 1.0
+Content-Type : text/html
+Content-Disposition: inline
+!
+cat /local/apps/Sri_venkata/Sri_scripts/phx_scripts/stopped_instance.html
+) | /usr/sbin/sendmail ${TO} ${CC}
+}
+smail
+
+~
