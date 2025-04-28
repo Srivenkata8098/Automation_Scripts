@@ -1,0 +1,23 @@
+export TO='MH-OCI-Infrastructure-Support@mheducation.com','jake.saunders@mheducation.com'
+cd /local/apps/Sri_venkata/Sri_scripts/phx_scripts
+
+send_csv_mail() {
+export SUBJ="Server Status Report PHX"
+(
+cat << EOF
+To: ${TO}
+From: oci@mheducation.com
+Subject: ${SUBJ}
+MIME-Version: 1.0
+Content-Type: text/csv
+Content-Disposition: attachment; filename="Server_Status_Report_PHX.csv"
+
+EOF
+
+# Assuming you convert HTML table to CSV before this step
+cat /local/apps/Sri_venkata/Sri_scripts/phx_scripts/test_new_phx.csv
+
+) | /usr/sbin/sendmail ${TO}
+}
+
+send_csv_mail
