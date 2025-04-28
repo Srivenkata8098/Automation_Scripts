@@ -1,0 +1,18 @@
+export TO='srivenkata.atti@mheducation.com'
+cd /local/apps/Sri_venkata
+smail()
+{
+export SUBJ="Unattached block volumes PHX"
+(
+cat << !
+To : ${TO}
+From : oci@mheducation.com
+Subject : ${SUBJ}
+MIME-Version : 1.0
+Content-Type : text/html
+Content-Disposition: inline
+!
+cat /local/apps/Sri_venkata/Sri_scripts/phx_scripts/un_block.html
+) | /usr/sbin/sendmail ${TO} ${CC}
+}
+smail
