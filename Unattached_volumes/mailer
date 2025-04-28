@@ -1,0 +1,18 @@
+xport TO='srivenkata.atti@mheducation.com'
+cd /local/apps/Sri_venkata/Sri_scripts
+smail()
+{
+export SUB='Unattached volumes'
+(
+cat<<!
+To : ${TO}
+From : oci@mheducation
+Subject : ${SUB}
+MIME-Version : 1.0
+Content-Type : text/html
+Content-Desposition : inline
+!
+cat /local/apps/Sri_venkata/Sri_scripts/phx_scripts/unattached_volumes.html
+) | /usr/sbin/sendmail ${TO}
+}
+smail
