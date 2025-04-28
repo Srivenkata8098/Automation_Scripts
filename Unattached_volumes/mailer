@@ -1,4 +1,4 @@
-xport TO='srivenkata.atti@mheducation.com'
+export TO='srivenkata.atti@mheducation.com'
 cd /local/apps/Sri_venkata/Sri_scripts
 smail()
 {
