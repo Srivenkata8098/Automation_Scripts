@@ -1,0 +1,61 @@
+#! /bin/bash
+cd /local/apps/Sri_venkata/Sri_scripts/phx_sripts
+output_file=stopped_instance.html
+region=us-phoenix-1
+echo "<html>" > $output_file
+echo "<head><title>Stopped Instances</title></head>" >> $output_file
+echo "<body>" >> $output_file
+#echo "<h1></h1>" >> $output_file
+echo "<table border='1' cellpadding='10'>" >> $output_file
+echo "<tr style='background-color: green'>" >> $output_file
+echo "<th>Compartment</th>" >> $output_file
+echo "<th>Instance name</th>" >> $output_file
+echo "<th>Instance Shape</th>" >> $output_file
+echo "<th>Created By</th>" >> $output_file
+echo "<th>Created time</th>" >> $output_file
+echo "</tr>" >> $output_file
+
+comp=$(oci iam compartment list --all --compartment-id-in-subtree 1 --query  'data[*].id' | sed 's/^.//'|sed 's/,//'|sed 's/"//g'| sed 's/^.//'|sed -r '/^\s*$/d')
+
+for i in $comp; do
+        instances=$(oci compute instance list --region $region -c $i --all --query "data[?\"lifecycle-state\"=='STOPPED']" --raw-output)
+
+        #echo $instances >> $output_file
+        if [ -z "$instances" ]; then
+                continue
+        else
+
+                echo "$instances" | jq -c '.[]'| while read -r ins; do
+
+                instance_name=$(echo "$ins" | jq -r '."display-name"')
+                instance_shape=$(echo "$ins" | jq -r '.shape')
+                created_by=$(echo "$ins" | jq -r '."defined-tags".MHE_PRIME.CreatedBy' | sed 's|"||g' | sed 's|/||g' | sed 's|,||g' | sed 's/oracleidentitycloudservice//g' | sed 's/@mheducation.com//g')
+                created_at=$(echo "$ins" | jq -r '."time-created"')
+
+
+                  echo "<tr>" >> $output_file
+                  echo "<td>" >> $output_file
+                  oci iam compartment get -c $i --query 'data.name' --raw-output >> $output_file
+                  echo "</td>" >> $output_file
+                  echo "<td>$instance_name</td>" >> $output_file
+                  echo "<td>$instance_shape</td>" >> $output_file
+                  echo "<td>$created_by</td>" >> $output_file
+                  echo "<td>$created_at</td>" >> $output_file
+                  echo "</tr>" >> $output_file
+          done
+
+
+          fi
+
+
+
+done
+
+echo "</table>" >>$output_file
+echo "</body>" >> $output_file
+echo "</html>" >> $output_file
+
+
+echo "HTML file generated: $output_file"
+
+/local/apps/Sri_venkata/Sri_scripts/phx_scripts/mailer_instance
